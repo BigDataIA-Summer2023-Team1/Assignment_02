@@ -13,63 +13,89 @@ provider "google" {
   credentials = file("${path.module}/tfkey.json")
 }
 
-resource "google_compute_address" "static" {
-  name = "ipv4-address"
+#resource "google_compute_address" "static" {
+#  name = "ipv4-address"
+#}
+#
+#
+#data "google_compute_image" "ubuntu" {
+#  family  = "ubuntu-2004-lts"
+#  project = "ubuntu-os-cloud"
+#}
+
+#data "template_file" "install" {
+#  template = file("${path.module}/install.sh")
+#}
+
+
+#resource "google_compute_instance" "vm" {
+#  name         = var.name
+#  machine_type = var.machine_type
+#  zone         = var.zone
+#  tags         = ["web"]
+#  #   labels       = var.labels
+#
+#  metadata = {
+#    ssh-keys = "${var.gce_ssh_user}:${file("${path.module}/${var.ssh_key_filename}.pub")}"
+#  }
+#
+#  boot_disk {
+#    initialize_params {
+#      image = data.google_compute_image.ubuntu.self_link
+#      size  = var.storage
+#      type  = "pd-balanced"
+#    }
+#  }
+#
+#  network_interface {
+#    network = "default"
+#    access_config {
+#      nat_ip = google_compute_address.static.address
+#    }
+#  }
+#
+#  metadata_startup_script = data.template_file.install.rendered
+#}
+
+#resource "google_compute_firewall" "default" {
+#  name    = "web-firewall"
+#  network = "default"
+#
+#  allow {
+#    protocol = "icmp"
+#  }
+#
+#  allow {
+#    protocol = "tcp"
+#    ports    = ["80", "8080", "30001", "30002", "30004", "30005", "30006"] # TODO: Change ports as required
+#  }
+#
+#  source_ranges = ["0.0.0.0/0"]
+#  target_tags   = ["web"]
+#}
+
+# Create new storage bucket in the US multi-region
+
+resource "google_storage_bucket" "static" {
+  name          = "earnings-call-data-new-bucket"
+  location      = "US"
+  storage_class = "COLDLINE"
+
+  uniform_bucket_level_access = true
 }
 
-
-data "google_compute_image" "ubuntu" {
-  family  = "ubuntu-2004-lts"
-  project = "ubuntu-os-cloud"
-}
-
-data "template_file" "install" {
-  template = file("${path.module}/install.sh")
-}
-
-
-resource "google_compute_instance" "vm" {
-  name         = var.name
-  machine_type = var.machine_type
-  zone         = var.zone
-  tags         = ["web"]
-  #   labels       = var.labels
-
-  metadata = {
-    ssh-keys = "${var.gce_ssh_user}:${file("${path.module}/${var.ssh_key_filename}.pub")}"
-  }
-
-  boot_disk {
-    initialize_params {
-      image = data.google_compute_image.ubuntu.self_link
-      size  = var.storage
-      type  = "pd-balanced"
+resource "google_sql_database_instance" "my_instance" {
+  name             = "my-sql-instance"
+  database_version = "POSTGRES_14"
+  project          = "your-project-id"
+  region           = "us-central1"
+  settings {
+    tier                     = "db-f1-micro"
+    activation_policy        = "ALWAYS"
+    availability_type        = "REGIONAL"
+    backup_configuration {
+      enabled = true
+      start_time = "23:00"
     }
   }
-
-  network_interface {
-    network = "default"
-    access_config {
-      nat_ip = google_compute_address.static.address
-    }
-  }
-
-  metadata_startup_script = data.template_file.install.rendered
-}
-
-resource "google_compute_firewall" "default" {
-  name    = "web-firewall"
-  network = "default"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["80", "8080", "30001", "30002", "30004", "30005", "30006"] # TODO: Change ports as required
-  }
-
-  source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["web"]
 }

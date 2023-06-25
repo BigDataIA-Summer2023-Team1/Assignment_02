@@ -75,9 +75,17 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     # User env var
     TICKER_DATA_FILE: ${TICKER_DATA_FILE}
-    STOCK_TICKER_DATA_FILE: ${STOCK_TICKER_DATA_FILE}
     REPO_OWNER: ${REPO_OWNER}
     REPO_NAME: ${REPO_NAME}
+
+    PROJECT_ID: ${PROJECT_ID}
+    BUCKET_NAME: ${BUCKET_NAME}
+
+    DB_NAME: ${DB_NAME}
+    DB_USER: ${DB_USER}
+    DB_PASS: ${DB_PASS}
+    DB_DRIVER: ${DB_DRIVER}
+    INSTANCE_CONNECTION_NAME: ${INSTANCE_CONNECTION_NAME}
 
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
@@ -306,33 +314,33 @@ services:
   # Database
 
   # Backend
-  fastapi:
-    container_name: fastapi
-    build:
-      context: ./api
-      # context: fastapi
-    restart: always
-    ports:
-      - "30005:8095"
-    environment:
-      - FASTAPI_HOST=fastapi
-      - FASTAPI_PORT=8095
-      - JWT_ALGORITHM=HS256
-      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-  # Frontend
-  streamlit:
-    container_name: streamlit
-    build:
-      context: ./frontend
-      # context: streamlit
-    restart: always
-    ports:
-      - "30006:8090"
-    depends_on:
-      - fastapi
-    environment:
-      - API_URL=http://fastapi:8095/api/v1
+#  fastapi:
+#    container_name: fastapi
+#    build:
+#      context: ./api
+#      # context: fastapi
+#    restart: always
+#    ports:
+#      - "30005:8095"
+#    environment:
+#      - FASTAPI_HOST=fastapi
+#      - FASTAPI_PORT=8095
+#      - JWT_ALGORITHM=HS256
+#      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
+#
+#  # Frontend
+#  streamlit:
+#    container_name: streamlit
+#    build:
+#      context: ./frontend
+#      # context: streamlit
+#    restart: always
+#    ports:
+#      - "30006:8090"
+#    depends_on:
+#      - fastapi
+#    environment:
+#      - API_URL=http://fastapi:8095/api/v1
 
 
 volumes:
