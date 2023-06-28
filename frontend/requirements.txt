@@ -1,0 +1,12 @@
+requests
+SQLAlchemy
+python-dotenv
+cloud-sql-python-connector
+cloud-sql-python-connector[pg8000]
+langchain
+openai==0.27.7
+tiktoken==0.4.0
+google-cloud-storage==2.9.0
+protobuf==3.19.3
+streamlit==1.22.0
+pinecone-client[grpc]==2.2.1
