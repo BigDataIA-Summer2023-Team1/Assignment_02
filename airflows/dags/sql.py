@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from google.cloud.sql.connector import Connector
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, DateTime, Index
 
@@ -38,13 +37,13 @@ class YourTable(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     company = Column(String(length=60))
     ticker = Column(String(length=10))
-    time = Column(DateTime)
+    financial_year = Column(DateTime)
     quarter = Column(String(length=3))
     uri = Column(String(length=255))
 
     # Define indexes on columns
     index1 = Index('company_idx', company)
-    index2 = Index('company_data_idx', time, company)
+    index2 = Index('company_data_idx', financial_year, company)
 
 
 def create_table():

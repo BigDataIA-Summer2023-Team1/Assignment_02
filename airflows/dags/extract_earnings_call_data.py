@@ -102,7 +102,7 @@ def upload_files(**context):
             delete_file(file_path)
 
             company_meta_data.append({"company": company_name, "ticker": company_ticker,
-                                      "time": datetime.datetime.strptime(year + "-" + month + "-" + date, "%Y-%m-%d"),
+                                      "financial_year": datetime.datetime.strptime(year + "-" + month + "-" + date, "%Y-%m-%d"),
                                       "quarter": quarter, "uri": public_file_url})
 
         batch_key = 'batch_{}'.format(batch_no)
