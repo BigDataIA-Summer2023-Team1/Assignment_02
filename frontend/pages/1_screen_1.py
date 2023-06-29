@@ -18,6 +18,14 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Pinecone
+from langchain.chat_models import ChatOpenAI
+from langchain.llms.openai import OpenAI
+from langchain.vectorstores.pinecone import Pinecone
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.chains.summarize import load_summarize_chain
+from langchain.document_loaders import PyPDFLoader
+
 
 load_dotenv("../.env")
 
@@ -197,6 +205,45 @@ def index_vectors(openai_key, pinecone_key, pinecone_environment, index_name, qu
         index.upsert(vectors=zip(ids, embeds, record_metadata))
         print("Indexing Completed")
 
+def process_query(input_query,PINECONE_API_KEY,PINECONE_ENVIRONMENT,INDEX_NAME,OPENAI_API_KEY):
+    text_field = "text"
+
+    pinecone.init(
+    api_key=PINECONE_API_KEY,
+    environment=PINECONE_ENVIRONMENT
+    )
+
+    # Switch back to the normal index for langchain
+    index = pinecone.Index(INDEX_NAME)
+
+    vectorstore = Pinecone(index, openai_embeddings(OPENAI_API_KEY).embed_query, text_field)
+
+    # # Perform similarity search using vectorstore
+    # search_results = vectorstore.similarity_search(
+    #     input_query,  # Our search query
+    #     k=3  # Return 3 most relevant documents
+    # )
+
+    # Create the Language Model (LLM) for completion
+    llm = ChatOpenAI(
+        openai_api_key=OPENAI_API_KEY,
+        model_name='gpt-3.5-turbo',
+        temperature=0.0
+    )
+
+    # Create a Retrieval QA chain with sources
+    qa = RetrievalQAWithSourcesChain.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=vectorstore.as_retriever()
+    )
+
+    # Process the query using the QA chain
+    result = qa(input_query)
+
+    return result
+
+
 # Streamlit app
 st.subheader('Text Summarization')
 
@@ -249,8 +296,11 @@ if show_data_btn:
     if openai_api_key and pinecone_api_key and pinecone_env and pinecone_index:
         earnings_call_data_summary = text_summarization(openai_api_key, earnings_call_data)
 
+
+        
         st.write("Earnings Call Data Summary: ")
         st.text_area("", value=earnings_call_data_summary.choices[0].text, height=300)
+        
 
         metadata = {'company': data[0]["company"], 'ticker': data[0]["ticker"],
                     'quarter': data[0]["quarter"], 'source': data[0]["uri"]}
@@ -260,5 +310,11 @@ if show_data_btn:
     else:
         st.warning(f"Please provide the missing fields.")
 
+    
+
 input_query = st.text_area("Your Query Here: ", "")
 search_btn = st.button("Search")
+if search_btn:
+    qa_with_sources = process_query(input_query,pinecone_api_key,pinecone_env,pinecone_index,openai_api_key)
+    st.write("Generative Questioning Answering using Langchain")
+    st.json(qa_with_sources)
