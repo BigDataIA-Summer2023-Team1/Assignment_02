@@ -7,7 +7,7 @@ RUN pip install --upgrade pip
 WORKDIR /app
 # Change the working dir inside the container - cd /app
 
-COPY  main.py requirements.txt ./
+COPY  main.py storage-key.json requirements.txt ./
 COPY pages ./pages
 # Copy main.py as source cod and req.txt as dependency
 
