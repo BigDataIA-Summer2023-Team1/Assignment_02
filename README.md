@@ -2,11 +2,11 @@
 
 - Please use this application responsibly, as we have limited free credits remaining.
 
-[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)]()
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](http://34.139.252.216:30006/)
+
+[![Apache Airflow](https://img.shields.io/badge/Apache_Airflow-007A88?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)](http://34.139.252.216:8080/)
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=FastAPI&logoColor=white)]()
-
-[![Apache Airflow](https://img.shields.io/badge/Apache_Airflow-007A88?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)]()
 
 [![codelabs](https://img.shields.io/badge/codelabs-4285F4?style=for-the-badge&logo=codelabs&logoColor=white)](https://codelabs-preview.appspot.com/?file_id=1JDqgTg8wtQyI5s-jvMLUf8tCtqtrd3sxw8xzP2gR32o)
 
@@ -17,12 +17,25 @@ Intelligence Co, a financial research firm, wants to explore the potential of la
 
 ## Project Goals :dart:
 Task -1:
+Data Ingestion: Copy all data from the github and store in Google Cloud storage and Store the metadata (Name, date, quarter, month, ticker symbol, Google cloud
+storage location of the file) in Google cloud SQL (Postgres SQL)
 
 Task -2:
+Build a streamlit application that would:
+1. Expose the metadata stored in the Google cloud storage as dropdowns for
+   selection
+2. Once a user selects a file, get the file and compute the summaries using OpenAI.
+3. If the user wants to search or ask questions regarding the chosen document:
+   Obtain the full transcript, Chunk and tokenize it and compute embeddings that are stored in
+   pinecone,  implement a Q/A interface on Streamlit 
 
 Task -3:
+Redo the Task-2 using langchain and pinecone and compare it with Task-2
+
 
 Task -4:
+Discuss what approach you would use and why you think the components are the best for the use case which include a technical design specification on how to
+accomplish your design
 
 ## Technologies Used :computer:
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
@@ -151,5 +164,5 @@ To run the application locally, follow these steps:
 Name | Contributions 
 --- | --- |
 Sanjana Karra | Implemented generative question & answering using langchain, Documentation
-Nikhil Reddy Polepally | Designed and build Streamlit UI & storing, indexing vector embeddings on pinecone DB
+Nikhil Reddy Polepally | Designed and build Streamlit UI & storing, indexing vector embeddings on pinecone DB, Drawn a architecute diagram.
 Shiva Sai Charan Ruthala | Implemented airflow pipelines to to ingest data from github to GCS and Google Cloud SQL & Deployed application on GCP
