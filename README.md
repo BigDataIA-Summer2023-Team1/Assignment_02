@@ -158,7 +158,8 @@ To run the application locally, follow these steps:
 
 ## Learning Outcomes
 1. How to leverage langchain package to build chatbots based on our data.
-2. 
+2. How to choose between different vector databases according to use case.
+3. How to utilize CloudSQL and Cloud Storage
 
 ## Team Information and Contribution 
 Name | Contributions 
